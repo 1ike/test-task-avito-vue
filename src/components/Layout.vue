@@ -1,16 +1,16 @@
 <template>
-  <a-layout>
-    <a-layout-header>
+  <i-layout>
+    <i-layout-header>
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/story">Story</router-link>
       </div>
       <slot name="header"></slot>
-    </a-layout-header>
-    <a-layout-content>
+    </i-layout-header>
+    <i-layout-content>
       <slot></slot>
-    </a-layout-content>
-  </a-layout>
+    </i-layout-content>
+  </i-layout>
 </template>
 
 <script lang="ts">
