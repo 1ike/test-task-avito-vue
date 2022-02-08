@@ -1,6 +1,11 @@
 <template>
   <Layout>
-    <template v-slot:header> header slot </template>
+    <template v-slot:header>
+      <i-button color="primary">
+        <i-icon name="ink-plus" class="_margin-right:1/2" />
+        Button Icon
+      </i-button></template
+    >
     <template v-slot:default>
       <div class="home">
         <img alt="Vue logo" src="../assets/logo.png" />

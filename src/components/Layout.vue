@@ -1,11 +1,14 @@
 <template>
   <i-layout>
-    <i-layout-header>
-      <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/story">Story</router-link>
-      </div>
-      <slot name="header"></slot>
+    <i-layout-header class="app-header">
+      <i-navbar class="app-navbar">
+        <i-navbar-brand to="/" class="app-brand">
+          Avito test task
+        </i-navbar-brand>
+        <slot name="header"></slot>
+      </i-navbar>
+
+      <!-- <router-link to="Home">Home</router-link> -->
     </i-layout-header>
     <i-layout-content>
       <slot></slot>
@@ -26,4 +29,14 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.app-header {
+  display: flex;
+  flex-direction: row;
+}
+.app-navbar {
+  flex-grow: 1;
+}
+.app-brand {
+  font-size: 2em;
+}
 </style>
