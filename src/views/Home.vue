@@ -1,11 +1,13 @@
 <template>
   <Layout>
     <template v-slot:header>
-      <i-button color="primary">
-        <i-icon name="ink-plus" class="_margin-right:1/2" />
-        Button Icon
-      </i-button></template
-    >
+      <RefreshButton
+        :disabled="disabled"
+        @refresh="refresh"
+        tooltipText="Refresh News"
+        tooltipPlacement="left"
+      />
+    </template>
     <template v-slot:default>
       <div class="home">
         <img alt="Vue logo" src="../assets/logo.png" />
@@ -15,16 +17,28 @@
   </Layout>
 </template>
 
+
 <script lang="ts">
 import { defineComponent } from 'vue';
+
 import Layout from '@/components/Layout.vue';
 import HelloWorld from '@/components/HelloWorld.vue';
+import RefreshButton from '@/components/RefreshButton.vue';
+
 
 export default defineComponent({
   name: 'Home',
   components: {
     Layout,
     HelloWorld,
+    RefreshButton,
+  },
+
+  setup() {
+    return {
+      refresh: () => alert(1),
+      disabled: false,
+    };
   },
 });
 </script>
