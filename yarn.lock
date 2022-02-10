@@ -964,6 +964,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@inkline/icons@^1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@inkline/icons/-/icons-1.5.4.tgz#1b3e1f61d15dbdb4bd36e065e95d4fc73e02f6af"
+  integrity sha512-2+Npt9eTup30k+2tz6rgaa3Qedc9SoAI26y/w/uhuF5lj1MSwWEHqxdhV/IVGdiLivM0V+DvAkKiUzBBviqEBg==
+
 "@inkline/inkline@^3.0.8":
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/@inkline/inkline/-/inkline-3.0.8.tgz#ce5e71903cc6ee5f0456b803e0a4f67f0e09622a"
