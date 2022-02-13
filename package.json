@@ -10,6 +10,7 @@
   "dependencies": {
     "@inkline/icons": "^1.5.4",
     "@inkline/inkline": "^3.0.8",
+    "axios": "^0.26.0",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",

@@ -18,27 +18,21 @@
 </template>
 
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 
 import Layout from '@/components/Layout.vue';
 import HelloWorld from '@/components/HelloWorld.vue';
 import RefreshButton from '@/components/RefreshButton.vue';
+import { getNewestStories } from '@/API';
+import config from '@/config';
 
+const refresh = ref(() => alert(1));
+const disabled = ref(false);
 
-export default defineComponent({
-  name: 'Home',
-  components: {
-    Layout,
-    HelloWorld,
-    RefreshButton,
-  },
+const storyQty = ref(config.STORIES_QTY_PER_PAGE);
 
-  setup() {
-    return {
-      refresh: () => alert(1),
-      disabled: false,
-    };
-  },
+onMounted(() => {
+  getNewestStories(storyQty.value).then((res) => console.log('res = ', res));
 });
 </script>
