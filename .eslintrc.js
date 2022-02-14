@@ -20,5 +20,6 @@ module.exports = {
         max: 2,
       },
     ],
+    'import/prefer-default-export': 'off',
   },
 };
