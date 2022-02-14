@@ -53,7 +53,7 @@ import { formatDate } from '@/lib';
 
 const store = useStore();
 
-const stories = computed(() => store.getters.getNewestStories);
+const stories = computed(() => store.getters['stories/getNewestStories']);
 
 const refresh = ref(() => alert(1));
 const disabled = ref(false);
@@ -61,7 +61,7 @@ const disabled = ref(false);
 const storyQty = ref(config.STORIES_QTY_PER_PAGE);
 
 onMounted(() => {
-  // getNewestStories(storyQty.value).then((res) => console.log('res = ', res));
+  store.dispatch('stories/fetchNewestStories', storyQty.value);
 });
 </script>
 

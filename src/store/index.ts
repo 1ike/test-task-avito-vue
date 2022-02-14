@@ -1,20 +1,11 @@
 import { createStore } from 'vuex';
 
 import { StoryInterface } from '@/types';
+import stories from './stories';
 
 
 export default createStore({
-  state: {
-  },
-  actions: {
-  },
-  mutations: {
-  },
-  getters: {
-    getNewestStories(state) {
-      // return state.stories;
-    },
-  },
   modules: {
+    stories,
   },
 });
