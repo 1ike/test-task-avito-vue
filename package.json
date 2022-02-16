@@ -8,7 +8,6 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@inkline/icons": "^1.5.4",
     "@inkline/inkline": "^3.0.8",
     "axios": "^0.26.0",
     "core-js": "^3.6.5",
