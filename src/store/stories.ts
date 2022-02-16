@@ -1,33 +1,30 @@
 import { StoryInterface } from '@/types';
 import { getNewestStories } from '@/API';
-import { ActionArgs, RequestStatus } from './types';
+import { ActionArgs } from './types';
 
 
 interface StoriesState {
   items: StoryInterface[],
-  requestStatus: RequestStatus,
 }
+
 
 export default {
   namespaced: true,
 
-  state: {
-    items: [],
-    requestStatus: RequestStatus.IDLE,
-  },
+  state: [],
   mutations: {
-    setStories: (state: StoriesState, payload: { stories: StoriesState['items'] }) => {
+    setStories: (state: StoriesState, payload: { stories: StoryInterface[] }): void => {
       state.items = payload.stories;
     },
   },
   actions: {
-    fetchNewestStories: async ({ commit }: ActionArgs, qty: number) => {
+    fetchNewestStories: async ({ commit }: ActionArgs, qty: number): Promise<void> => {
       const stories = await getNewestStories(qty);
       commit('setStories', { stories });
     },
   },
   getters: {
-    getNewestStories(state: StoriesState) {
+    getNewestStories(state: StoriesState): StoryInterface[] {
       return state.items;
     },
   },

@@ -51,6 +51,7 @@ import RefreshButton from '@/components/RefreshButton.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
 import config from '@/config';
 import { formatDate, polling } from '@/lib';
+import { RequestStatus } from '@/store/types';
 
 const store = useStore();
 
@@ -58,13 +59,21 @@ const stories = computed(() => store.getters['stories/getNewestStories']);
 
 const timer = ref();
 
-const disabled = ref(false);
+const requestStatus = ref(RequestStatus.IDLE);
+const disabled = computed(() => requestStatus.value === RequestStatus.REQUEST);
 
 const storyQty = ref(config.STORIES_QTY_PER_PAGE);
 
 const pollingStories = () => polling({
   timer,
-  successCallback: () => store.dispatch('stories/fetchNewestStories', storyQty.value),
+  successCallback: () => {
+    requestStatus.value = RequestStatus.REQUEST;
+    return store
+      .dispatch('stories/fetchNewestStories', storyQty.value)
+      .then(() => {
+        requestStatus.value = RequestStatus.SUCCESS;
+      });
+  },
 });
 
 const refresh = ref(() => pollingStories());
