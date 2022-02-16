@@ -10,7 +10,7 @@
     </template>
 
     <template v-slot:default>
-      <div class="_margin-top:2 _margin-bottom:2">
+      <i-container class="_margin-top:2 _margin-bottom:2">
         <router-link
           v-bind:to="{ name: 'Story', params: { id: story.id } }"
           v-for="story in stories"
@@ -34,7 +34,11 @@
             </template>
           </i-card>
         </router-link>
-      </div>
+        <i-tooltip class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2">
+          <i-button @click="showMore" color="primary" :disabled="disabled">Show more</i-button>
+          <template #body>Show more</template>
+        </i-tooltip>
+      </i-container>
     </template>
   </Layout>
 </template>
@@ -62,7 +66,7 @@ const timer = ref();
 const requestStatus = ref(RequestStatus.IDLE);
 const disabled = computed(() => requestStatus.value === RequestStatus.REQUEST);
 
-const storyQty = ref(config.STORIES_QTY_PER_PAGE);
+const storyQty = computed(() => store.getters['stories/getStoryQty']);
 
 const pollingStories = () => polling({
   timer,
@@ -76,7 +80,12 @@ const pollingStories = () => polling({
   },
 });
 
-const refresh = ref(() => pollingStories());
+const refresh = () => pollingStories();
+
+const showMore = () => {
+  store.commit('stories/setStoryQty', { storyQty: storyQty.value + config.STORIES_QTY_PER_PAGE });
+  refresh();
+};
 
 onMounted(() => {
   pollingStories();
