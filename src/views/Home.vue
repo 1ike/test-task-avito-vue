@@ -41,27 +41,40 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import {
+  ref, onMounted, computed, onUnmounted,
+} from 'vue';
 import { useStore } from 'vuex';
 
 import Layout from '@/components/Layout.vue';
 import RefreshButton from '@/components/RefreshButton.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
-import { getNewestStories } from '@/API';
 import config from '@/config';
-import { formatDate } from '@/lib';
+import { formatDate, polling } from '@/lib';
 
 const store = useStore();
 
 const stories = computed(() => store.getters['stories/getNewestStories']);
 
-const refresh = ref(() => alert(1));
+const timer = ref();
+
 const disabled = ref(false);
 
 const storyQty = ref(config.STORIES_QTY_PER_PAGE);
 
+const pollingStories = () => polling({
+  timer,
+  successCallback: () => store.dispatch('stories/fetchNewestStories', storyQty.value),
+});
+
+const refresh = ref(() => pollingStories());
+
 onMounted(() => {
-  store.dispatch('stories/fetchNewestStories', storyQty.value);
+  pollingStories();
+});
+
+onUnmounted(() => {
+  clearInterval(timer.value);
 });
 </script>
 
