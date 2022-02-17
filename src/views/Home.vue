@@ -34,10 +34,11 @@
             </template>
           </i-card>
         </router-link>
-        <i-tooltip class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2">
-          <i-button
-          @click="showMore" color="primary" :disabled="loading" :class="{'app-button': loading }"
-          >Show more</i-button>
+        <i-tooltip
+          class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2"
+          :class="{ 'disable-button': loading }"
+        >
+          <i-button @click="showMore" color="primary" :disabled="loading">Show more</i-button>
           <template #body>Show more</template>
         </i-tooltip>
       </i-container>
@@ -107,7 +108,7 @@ onUnmounted(() => {
     text-decoration: none;
   }
 }
-.app-button {
-  opacity: 0.5;
+.disable-button {
+  opacity: 0.7;
 }
 </style>
