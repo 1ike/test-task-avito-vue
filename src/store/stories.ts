@@ -1,4 +1,4 @@
-import { StoryInterface } from '@/types';
+import { ID, StoryInterface } from '@/types';
 import { getNewestStories } from '@/API';
 import config from '@/config';
 import { ActionArgs } from './types';
@@ -37,6 +37,11 @@ export default {
     },
     getStoryQty(state: StoriesState): number {
       return state.storyQty;
+    },
+    getStory(state: StoriesState, getters: any) {
+      return (id: ID): StoryInterface | undefined => getters.getNewestStories.find(
+        (story:StoryInterface) => story.id === id,
+      );
     },
   },
 };
