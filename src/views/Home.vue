@@ -2,7 +2,7 @@
   <Layout>
     <template v-slot:header>
       <RefreshButton
-        :disabled="disabled"
+        :disabled="loading"
         @refresh="refresh"
         tooltipText="Refresh News"
         tooltipPlacement="left"
@@ -35,10 +35,13 @@
           </i-card>
         </router-link>
         <i-tooltip class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2">
-          <i-button @click="showMore" color="primary" :disabled="disabled">Show more</i-button>
+          <i-button
+          @click="showMore" color="primary" :disabled="loading" :class="{'app-button': loading }"
+          >Show more</i-button>
           <template #body>Show more</template>
         </i-tooltip>
       </i-container>
+      <FullScreenLoader :loading="loading" />
     </template>
   </Layout>
 </template>
@@ -53,6 +56,7 @@ import { useStore } from 'vuex';
 import Layout from '@/components/Layout.vue';
 import RefreshButton from '@/components/RefreshButton.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
+import FullScreenLoader from '@/components/FullScreenLoader.vue';
 import config from '@/config';
 import { formatDate, polling } from '@/lib';
 import { RequestStatus } from '@/store/types';
@@ -64,7 +68,7 @@ const stories = computed(() => store.getters['stories/getNewestStories']);
 const timer = ref();
 
 const requestStatus = ref(RequestStatus.IDLE);
-const disabled = computed(() => requestStatus.value === RequestStatus.REQUEST);
+const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
 
 const storyQty = computed(() => store.getters['stories/getStoryQty']);
 
@@ -102,5 +106,8 @@ onUnmounted(() => {
   &:hover {
     text-decoration: none;
   }
+}
+.app-button {
+  opacity: 0.5;
 }
 </style>
