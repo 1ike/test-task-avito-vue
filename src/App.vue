@@ -23,4 +23,13 @@
     }
   }
 }
+
+.app-link-card {
+  &:hover {
+    text-decoration: none;
+  }
+}
+.app-button--disabled {
+  opacity: 0.7;
+}
 </style>

@@ -15,7 +15,7 @@
           v-bind:to="{ name: 'Story', params: { id: story.id } }"
           v-for="story in stories"
           v-bind:key="story.id"
-          class="link-card"
+          class="app-link-card"
         >
           <i-card class="_margin-bottom:1/2 _text-align:left" size="lg">
             <template #header>
@@ -36,7 +36,7 @@
         </router-link>
         <i-tooltip
           class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2"
-          :class="{ 'disable-button': loading }"
+          :class="{ 'app-button--disabled': loading }"
         >
           <i-button @click="showMore" color="primary" :disabled="loading">Show more</i-button>
           <template #body>Show more</template>
@@ -100,15 +100,3 @@ onUnmounted(() => {
   clearInterval(timer.value);
 });
 </script>
-
-
-<style lang="scss">
-.link-card {
-  &:hover {
-    text-decoration: none;
-  }
-}
-.disable-button {
-  opacity: 0.7;
-}
-</style>
