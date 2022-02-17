@@ -10,7 +10,7 @@
     </template>
 
     <template v-slot:default>
-      <i-container class="_margin-top:2 _margin-bottom:2">
+      <i-container v-if="stories.length" class="_margin-top:2 _margin-bottom:2">
         <router-link
           v-bind:to="{ name: 'Story', params: { id: story.id } }"
           v-for="story in stories"

@@ -2,10 +2,12 @@
   <i-layout>
     <i-layout-header class="app-header">
       <i-navbar class="app-navbar">
-        <i-navbar-brand to="/" class="app-brand">
+        <i-navbar-brand to="/" class="app-brand _margin-left:2">
           Avito test task
         </i-navbar-brand>
-        <slot name="header"></slot>
+        <div class="_margin-right:3">
+          <slot name="header"></slot>
+        </div>
       </i-navbar>
 
       <!-- <router-link to="Home">Home</router-link> -->
