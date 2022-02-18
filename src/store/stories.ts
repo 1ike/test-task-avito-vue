@@ -38,6 +38,8 @@ export default {
     getStoryQty(state: StoriesState): number {
       return state.storyQty;
     },
+    /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     getStory(state: StoriesState, getters: any) {
       return (id: ID): StoryInterface | undefined => getters.getNewestStories.find(
         (story:StoryInterface) => story.id === id,

@@ -1,35 +1,18 @@
 <template>
-  <Layout>
-    <template v-slot:header>
-      <RefreshButton
-        :disabled="loading"
-        @refresh="refresh"
-        tooltipText="Refresh News"
-        tooltipPlacement="left"
-      />
-    </template>
-
-    <template v-slot:default>
-    <div class="app-story">
-      <h1 class="">{{story.title}}</h1>
-      <dl class="app-story__definitions">
-        <dt class="">Author</dt>
-        <dd class="">{{story.by}}</dd>
-        <dt class="">Date</dt>
-        <dd class="">{{formatDate(story.time)}}</dd>
-        <template v-if="story.url">
-          <dt>Link</dt>
-          <dd><a href={{story.url}}>{{story.url}}</a></dd>
-        </template>
-        <template v-if="story.text">
-              <dt >Text</dt>
-              <dd v-html="story.text"></dd>
-        </template>
-      </dl>
-    </div>
-      <FullScreenLoader :loading="loading" />
-    </template>
-  </Layout>
+  <section>
+    <header class="_display:flex _align-items:center">
+      <h2 class=" ">Comments</h2>
+      <div>
+        <ButtonRefresh
+          :disabled="loading"
+          @refresh="refresh"
+          tooltipText="Refresh comments"
+          tooltipPlacement="left"
+          class="_margin-left:2 _margin-top:2"
+        />
+      </div>
+    </header>
+  </section>
 </template>
 
 
@@ -41,7 +24,7 @@ import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 import Layout from '@/components/Layout.vue';
-import RefreshButton from '@/components/RefreshButton.vue';
+import ButtonRefresh from '@/components/ButtonRefresh.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
 import FullScreenLoader from '@/components/FullScreenLoader.vue';
 import config from '@/config';
@@ -86,25 +69,9 @@ onUnmounted(() => {
 .-dark .app-story {
   color: white;
  }
-.app-story {
-  display: flex;
-  flex-direction: column;
-}
-.app-story__definitions {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-$dtWidth: 100px;
-dt {
-  flex: 0 0 auto;
-  width: $dtWidth;
-  // font-weight: 500;
-}
-dd {
-  flex: 0 0 auto;
-  width: calc(100% - $dtWidth);
-  margin-left: 0;
-  margin-bottom: 0.5rem;
+.app-comments-header {
+  margin-top: -5px;
+  // flex-direction: column;
+
 }
 </style>

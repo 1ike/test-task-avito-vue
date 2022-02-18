@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <template v-slot:header>
-      <RefreshButton
+      <ButtonRefresh
         :disabled="loading"
         @refresh="refresh"
         tooltipText="Refresh News"
@@ -33,14 +33,13 @@
           </template>
         </i-card>
       </router-link>
-      <i-tooltip
+      <ButtonPrimary
         v-if="stories.length"
+        @click="showMore"
+        :disabled="loading"
+        tooltipText="Show more"
         class="_margin-top:2 _margin-left:2 _margin-bottom:2"
-        :class="{ 'app-button--disabled': loading }"
-      >
-        <i-button @click="showMore" color="primary" :disabled="loading">Show more</i-button>
-        <template #body>Show more</template>
-      </i-tooltip>
+      />
       <FullScreenLoader :loading="loading" />
     </template>
   </Layout>
@@ -54,9 +53,10 @@ import {
 import { useStore } from 'vuex';
 
 import Layout from '@/components/Layout.vue';
-import RefreshButton from '@/components/RefreshButton.vue';
+import ButtonRefresh from '@/components/ButtonRefresh.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
 import FullScreenLoader from '@/components/FullScreenLoader.vue';
+import ButtonPrimary from '@/components/ButtonPrimary.vue';
 import config from '@/config';
 import { formatDate, polling } from '@/lib';
 import { RequestStatus } from '@/store/types';
