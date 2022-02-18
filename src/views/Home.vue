@@ -10,38 +10,37 @@
     </template>
 
     <template v-slot:default>
-      <i-container v-if="stories.length" class="_margin-top:2 _margin-bottom:2">
-        <router-link
-          v-bind:to="{ name: 'Story', params: { id: story.id } }"
-          v-for="story in stories"
-          v-bind:key="story.id"
-          class="app-link-card"
-        >
-          <i-card class="_margin-bottom:1/2 _text-align:left" size="lg">
-            <template #header>
-              <h2 class="h5">{{ story.title }}</h2>
-              <small class="_display:block _margin-top:1">
-                {{ story.score }} points
+      <router-link
+        v-bind:to="{ name: 'Story', params: { id: story.id } }"
+        v-for="story in stories"
+        v-bind:key="story.id"
+        class="app-link-card"
+      >
+        <i-card class="_margin-bottom:1/2" size="lg">
+          <template #header>
+            <h2 class="h5">{{ story.title }}</h2>
+            <small class="_display:block _margin-top:1">
+              {{ story.score }} points
+              <DelimiterVertical />
+              {{ story.by }}
+              <DelimiterVertical />
+              {{ formatDate(story.time) }}
+              <span v-if="story.kids">
                 <DelimiterVertical />
-                {{ story.by }}
-                <DelimiterVertical />
-                {{ formatDate(story.time) }}
-                <span v-if="story.kids">
-                  <DelimiterVertical />
-                  <span>Has comments</span>
-                </span>
-              </small>
-            </template>
-          </i-card>
-        </router-link>
-        <i-tooltip
-          class="_float:left _margin-top:2 _margin-left:2 _margin-bottom:2"
-          :class="{ 'app-button--disabled': loading }"
-        >
-          <i-button @click="showMore" color="primary" :disabled="loading">Show more</i-button>
-          <template #body>Show more</template>
-        </i-tooltip>
-      </i-container>
+                <span>Has comments</span>
+              </span>
+            </small>
+          </template>
+        </i-card>
+      </router-link>
+      <i-tooltip
+        v-if="stories.length"
+        class="_margin-top:2 _margin-left:2 _margin-bottom:2"
+        :class="{ 'app-button--disabled': loading }"
+      >
+        <i-button @click="showMore" color="primary" :disabled="loading">Show more</i-button>
+        <template #body>Show more</template>
+      </i-tooltip>
       <FullScreenLoader :loading="loading" />
     </template>
   </Layout>
