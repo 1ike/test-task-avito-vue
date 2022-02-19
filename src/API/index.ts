@@ -55,7 +55,7 @@ const getItem = async <T extends { time: Time }>(id: ID, entityName: EntityNames
   return item;
 };
 
-const getStory = async (id: ID): Promise<StoryInterface> => {
+export const getStory = async (id: ID): Promise<StoryInterface> => {
   const story$ = getItem<StoryInterface>(id, EntityNames.Story);
 
   return story$;

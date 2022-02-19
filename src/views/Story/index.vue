@@ -22,18 +22,18 @@
       </ButtonPrimary>
     </template>
 
-    <template v-slot:default>
-      <div class="app-story _display:flex _flex-direction:column">
-        <h1 class>{{ story.title }}</h1>
+    <template v-if="story">
+      <div class="app-dark-theme-text-color _display:flex _flex-direction:column">
+        <h1>{{ story.title }}</h1>
         <dl class="_display:flex _flex-wrap:wrap _margin-top:1">
-          <dt class>Author</dt>
-          <dd class>{{ story.by }}</dd>
-          <dt class>Date</dt>
-          <dd class>{{ formatDate(story.time) }}</dd>
+          <dt>Author</dt>
+          <dd>{{ story.by }}</dd>
+          <dt>Date</dt>
+          <dd>{{ formatDate(story.time) }}</dd>
           <template v-if="story.url">
             <dt>Link</dt>
             <dd>
-              <a href="{{story.url}}">{{ story.url }}</a>
+              <a href="{{ story.url }}">{{ story.url }}</a>
             </dd>
           </template>
           <template v-if="story.text">
@@ -42,26 +42,33 @@
           </template>
         </dl>
       </div>
-      <FullScreenLoader :loading="loading" />
       <Comments />
     </template>
+
+    <i-loader color="primary" v-if:="loading" class="app-loader"/>
+
+    <i-alert color="warning" v-if:="error">
+      <template #icon>
+        <i-icon name="ink-warning" />
+      </template>
+      <span>
+        {{ error }}
+        <br />
+        <br />Try to refresh the page.
+      </span>
+    </i-alert>
   </Layout>
 </template>
 
 
 <script setup lang="ts">
-import {
-  ref, onMounted, computed, onUnmounted,
-} from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 import Layout from '@/components/Layout.vue';
 import ButtonPrimary from '@/components/ButtonPrimary.vue';
-import DelimiterVertical from '@/components/DelimiterVertical.vue';
-import FullScreenLoader from '@/components/FullScreenLoader.vue';
-import config from '@/config';
-import { formatDate, polling } from '@/lib';
+import { formatDate } from '@/lib';
 import { RequestStatus } from '@/store/types';
 import Comments from './Comments.vue';
 
@@ -69,40 +76,43 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 
-const timer = ref();
+const error = ref();
 
 const requestStatus = ref(RequestStatus.IDLE);
 const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
 
-const story = computed(() => store.getters['stories/getStory'](Number(route.params.id)));
-console.log('story = ', story.value);
-const pollingStories = () => polling({
-  timer,
-  successCallback: () => {
-    requestStatus.value = RequestStatus.REQUEST;
-    return store
-      .dispatch('stories/fetchNewestStories', 1)
-      .then(() => {
-        requestStatus.value = RequestStatus.SUCCESS;
-      });
-  },
-});
+const id = Number(route.params.id);
+
+const story = computed(() => store.getters['stories/getStory'](id));
 
 const goHome = () => router.push({ name: 'Home' });
-
-// onMounted(() => {
-//   pollingStories();
-// });
-
-onUnmounted(() => {
-  clearInterval(timer.value);
+console.log('loading = ', loading);
+onMounted(() => {
+  if (!story.value) {
+    requestStatus.value = RequestStatus.REQUEST;
+    store
+      .dispatch('stories/fetchStory', id)
+      .then(() => {
+        requestStatus.value = RequestStatus.SUCCESS;
+      })
+      .catch((e) => {
+        requestStatus.value = RequestStatus.FAILURE;
+        error.value = e;
+      });
+  }
 });
 </script>
 
 
 <style scoped lang="scss">
-.-dark .app-story {
+.-dark .app-dark-theme-text-color {
   color: white;
+}
+
+.app-loader {
+  margin-left: 50%;
+  transform: translate(-50%);
+  margin-top: 3em;
 }
 
 $dtWidth: 100px;

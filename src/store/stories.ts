@@ -1,5 +1,5 @@
 import { ID, StoryInterface } from '@/types';
-import { getNewestStories } from '@/API';
+import { getNewestStories, getStory } from '@/API';
 import config from '@/config';
 import { ActionArgs } from './types';
 
@@ -21,6 +21,14 @@ export default {
     setStories: (state: StoriesState, payload: { stories: StoryInterface[] }): void => {
       state.items = payload.stories;
     },
+    setStory: (state: StoriesState, payload: { id: ID, story: StoryInterface }): void => {
+      const existedStoryIndex = state.items.findIndex((story) => story.id === payload.id);
+      if (existedStoryIndex !== -1) {
+        state.items[existedStoryIndex] = payload.story;
+      } else {
+        state.items.push(payload.story);
+      }
+    },
     setStoryQty: (state: StoriesState, payload: { storyQty: number }): void => {
       state.storyQty = payload.storyQty;
     },
@@ -29,6 +37,10 @@ export default {
     fetchNewestStories: async ({ commit }: ActionArgs, qty: number): Promise<void> => {
       const stories = await getNewestStories(qty);
       commit('setStories', { stories });
+    },
+    fetchStory: async ({ commit }: ActionArgs, qty: number): Promise<void> => {
+      const story = await getStory(qty);
+      commit('setStory', { story });
     },
   },
   getters: {

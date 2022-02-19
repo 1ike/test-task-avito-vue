@@ -1,7 +1,7 @@
 <template>
   <section>
     <header class="_display:flex _align-items:center">
-      <h2 class=" ">Comments</h2>
+      <h2 class="app-comments-header">Comments</h2>
       <div>
         <ButtonRefresh
           :disabled="loading"
@@ -66,12 +66,8 @@ onUnmounted(() => {
 
 
 <style scoped lang="scss">
-.-dark .app-story {
-  color: white;
+$color:white;
+.-dark .app-comments-header{
+  color: $color;
  }
-.app-comments-header {
-  margin-top: -5px;
-  // flex-direction: column;
-
-}
 </style>
