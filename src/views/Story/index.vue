@@ -62,7 +62,9 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import {
+  ref, onMounted, computed, watchEffect,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -86,7 +88,14 @@ const id = Number(route.params.id);
 const story = computed(() => store.getters['stories/getStory'](id));
 
 const goHome = () => router.push({ name: 'Home' });
-console.log('loading = ', loading);
+
+
+watchEffect(() => {
+  if (story.value?.title) {
+    document.title = story.value.title;
+  }
+});
+
 onMounted(() => {
   if (!story.value) {
     requestStatus.value = RequestStatus.REQUEST;

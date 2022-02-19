@@ -9,6 +9,9 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Home',
     component: Home,
+    meta: {
+      title: 'The newest stories',
+    },
   },
   {
     path: '/:id',
@@ -23,6 +26,12 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(config.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const main = 'Avito test task';
+  document.title = to?.meta?.title ? `${to.meta.title}` : main;
+  next();
 });
 
 export default router;
