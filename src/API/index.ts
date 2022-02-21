@@ -27,7 +27,7 @@ export interface CommentTreeData {
 const transformDate = (time: Time) => time * 1000;
 
 
-const fetchItem = async <T extends { time: Time }>(id: ID) => axios.get<T>(`${config.HACKER_NEWS_API_URL}/item/${id}.json`);
+const fetchItem = async <T extends { time: Time }>(id: ID) => axios.get<T>(`${config.HACKER_NEWS_API_URL}item/${id}.json`);
 
 
 // eslint-disable-next-line no-shadow
@@ -56,9 +56,9 @@ const getItem = async <T extends { time: Time }>(id: ID, entityName: EntityNames
 };
 
 export const getStory = async (id: ID): Promise<StoryInterface> => {
-  const story$ = getItem<StoryInterface>(id, EntityNames.Story);
+  const story = await getItem<StoryInterface>(id, EntityNames.Story);
 
-  return story$;
+  return story;
 };
 
 const getNewestStoryIds = async (storiesQty: number): Promise<IDs> => {
@@ -82,11 +82,11 @@ export const getNewestStories = async (
 };
 
 
-// const getComment = async (id: ID): Promise<CommentInterface> => {
-//   const comment$ = getItem<CommentInterface>(id, EntityNames.Comment);
+export const getComment = async (id: ID): Promise<CommentInterface> => {
+  const comment = await getItem<CommentInterface>(id, EntityNames.Comment);
 
-//   return comment$;
-// };
+  return comment;
+};
 
 /* const getCommentTree(kids: IDs = [], level = 1): Promise<any> => {
 

@@ -42,7 +42,7 @@
           </template>
         </dl>
       </div>
-      <Comments />
+      <Comments v-if="story.kids?.length" :commentIds="story.kids" />
     </template>
 
     <i-loader color="primary" v-if:="loading" class="app-loader"/>
@@ -72,7 +72,7 @@ import Layout from '@/components/Layout.vue';
 import ButtonPrimary from '@/components/ButtonPrimary.vue';
 import { formatDate } from '@/lib';
 import { RequestStatus } from '@/store/types';
-import Comments from './Comments.vue';
+import Comments from './Comments/index.vue';
 
 const route = useRoute();
 const router = useRouter();

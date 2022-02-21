@@ -1,6 +1,6 @@
 <template>
   <section>
-    <header class="_display:flex _align-items:center">
+    <header class="_display:flex _align-items:center _margin-bottom:2">
       <h2 class="app-comments-header">Comments</h2>
       <div>
         <ButtonRefresh
@@ -12,24 +12,30 @@
         />
       </div>
     </header>
+  <Comment v-for="id in commentIds" :key="id" :id="id" />
   </section>
 </template>
 
 
 <script setup lang="ts">
+/* eslint-disable import/first */
 import {
   ref, onMounted, computed, onUnmounted,
 } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
-import Layout from '@/components/Layout.vue';
 import ButtonRefresh from '@/components/ButtonRefresh.vue';
-import DelimiterVertical from '@/components/DelimiterVertical.vue';
 import FullScreenLoader from '@/components/FullScreenLoader.vue';
 import config from '@/config';
-import { formatDate, polling } from '@/lib';
+import { polling } from '@/lib';
 import { RequestStatus } from '@/store/types';
+import { ID } from '@/types';
+import Comment from './Comment.vue';
+
+
+// eslint-disable-next-line no-undef
+defineProps<{ commentIds: ID[] }>();
 
 const route = useRoute();
 const store = useStore();
