@@ -11,7 +11,7 @@
         </button>
       </span>
     </template>
-    <div v-html="comment.text"></div>
+    <div v-html="sanitizeHtml(comment.text)"></div>
   </i-card>
 </template>
 
@@ -22,6 +22,7 @@ import {
 } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import sanitizeHtml from 'sanitize-html';
 
 import Layout from '@/components/Layout.vue';
 import ButtonRefresh from '@/components/ButtonRefresh.vue';

@@ -38,7 +38,7 @@
           </template>
           <template v-if="story.text">
             <dt>Text</dt>
-            <dd v-html="story.text"></dd>
+            <dd v-html="sanitizeHtml(story.text)"></dd>
           </template>
         </dl>
       </div>
@@ -67,6 +67,7 @@ import {
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import sanitizeHtml from 'sanitize-html';
 
 import Layout from '@/components/Layout.vue';
 import ButtonPrimary from '@/components/ButtonPrimary.vue';
