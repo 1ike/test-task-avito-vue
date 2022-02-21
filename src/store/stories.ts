@@ -21,8 +21,8 @@ export default {
     setStories: (state: StoriesState, payload: { stories: StoryInterface[] }): void => {
       state.items = payload.stories;
     },
-    setStory: (state: StoriesState, payload: { id: ID, story: StoryInterface }): void => {
-      const existedStoryIndex = state.items.findIndex((story) => story.id === payload.id);
+    setStory: (state: StoriesState, payload: { story: StoryInterface }): void => {
+      const existedStoryIndex = state.items.findIndex((s) => s.id === payload.story.id);
       if (existedStoryIndex !== -1) {
         state.items[existedStoryIndex] = payload.story;
       } else {
@@ -38,8 +38,8 @@ export default {
       const stories = await getNewestStories(qty);
       commit('setStories', { stories });
     },
-    fetchStory: async ({ commit }: ActionArgs, qty: number): Promise<void> => {
-      const story = await getStory(qty);
+    fetchStory: async ({ commit }: ActionArgs, id: ID): Promise<void> => {
+      const story = await getStory(id);
       commit('setStory', { story });
     },
   },
