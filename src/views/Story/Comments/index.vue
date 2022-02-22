@@ -1,7 +1,7 @@
 <template>
   <section>
     <header class="_display:flex _align-items:center _margin-bottom:2">
-      <h2 class="app-comments-header">Comments</h2>
+      <h2 class="app-comments-header">Comments ({{ commentsQty }})</h2>
       <div>
         <ButtonRefresh
           :disabled="loading"
@@ -12,7 +12,7 @@
         />
       </div>
     </header>
-  <Comment v-for="id in commentIds" :key="id" :id="id" />
+    <Comment v-for="id in commentIds" :key="id" :id="id" root="true"/>
   </section>
 </template>
 
@@ -45,8 +45,8 @@ const timer = ref();
 const requestStatus = ref(RequestStatus.IDLE);
 const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
 
-const story = computed(() => store.getters['stories/getStory'](Number(route.params.id)));
-console.log('story = ', story.value);
+const commentsQty = computed(() => store.getters['comments/getCommentsQty']);
+
 const pollingStories = () => polling({
   timer,
   successCallback: () => {
@@ -72,8 +72,8 @@ onUnmounted(() => {
 
 
 <style scoped lang="scss">
-$color:white;
-.-dark .app-comments-header{
+$color: white;
+.-dark .app-comments-header {
   color: $color;
- }
+}
 </style>

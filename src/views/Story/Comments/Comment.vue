@@ -1,17 +1,27 @@
 <template>
-  <i-card v-if="comment" class="_margin-bottom:1/2" size="lg">
+  <i-card
+    v-if="comment"
+    class="_margin-bottom:1 _margin-top:1"
+    :class="{ '_margin-left:1': !root }"
+  >
     <template #header>
       {{ comment.by }}
-      <DelimiterVertical />
+      <DelimiterVertical/>
       {{ formatDate(comment.time) }}
-      <span v-if="comment.kids">
-        <DelimiterVertical />
-        <button class="card--button" color="primary">
-          {{ true ? 'hide answers' : 'show answers' }}
-        </button>
+      <span v-if="root && comment.kids">
+        <DelimiterVertical/>
+        <i-button outline color="primary" @click="toggleChildrenVisibility">
+          {{ showChildren ? 'hide answers' : 'show answers' }}
+        </i-button>
       </span>
     </template>
     <div v-html="sanitizeHtml(comment.text)"></div>
+
+    <Comment
+      v-show="comment.kids && showChildren"
+      v-for="commentId in comment.kids"
+      :key="commentId" :id="commentId"
+    />
   </i-card>
 </template>
 
@@ -35,13 +45,15 @@ import { ID } from '@/types';
 
 
 // eslint-disable-next-line no-undef
-const props = defineProps<{ id: ID }>();
+const props = defineProps<{ id: ID, root: boolean }>();
 const { id } = toRefs(props);
 
-const route = useRoute();
 const store = useStore();
 
-// const timer = ref();
+const showChildren = ref(false);
+const toggleChildrenVisibility = () => {
+  showChildren.value = !showChildren.value;
+};
 
 const requestStatus = ref(RequestStatus.IDLE);
 const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
@@ -55,6 +67,7 @@ onMounted(() => {
     .then(() => {
       requestStatus.value = RequestStatus.SUCCESS;
     });
+  console.log('comment = ', comment);
 });
 
 onUnmounted(() => {
