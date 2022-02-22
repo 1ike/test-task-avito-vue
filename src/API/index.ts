@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   ID,
   IDs,
+  BaseEntityInterface,
   StoryInterface,
   CommentInterface,
   Time,
@@ -27,7 +28,7 @@ export interface CommentTreeData {
 const transformDate = (time: Time) => time * 1000;
 
 
-const fetchItem = async <T extends { time: Time }>(id: ID) => axios.get<T>(`${config.HACKER_NEWS_API_URL}item/${id}.json`);
+const fetchItem = async <T>(id: ID) => axios.get<T>(`${config.HACKER_NEWS_API_URL}item/${id}.json`);
 
 
 // eslint-disable-next-line no-shadow
@@ -36,21 +37,23 @@ export enum EntityNames {
   Comment = 'Comment',
 }
 
-const getItem = async <T extends { time: Time }>(id: ID, entityName: EntityNames): Promise<T> => {
+type PartialItem = Partial<BaseEntityInterface>
+
+const getItem = async <T extends PartialItem>(id: ID, entityName: EntityNames): Promise<T> => {
   let item;
 
   try {
     const response = await fetchItem<T>(id);
-    item = response.data;
+    item = response.data as T;
   } catch (error) {
     throw new Error(`Fetching ${entityName} with id "${id}" failed with error: ${error}`);
   }
 
-  if (!item) {
+  if (!item || item.dead || item.deleted) {
     throw new Error(`Validation ${entityName} with id "${id}" failed`);
   }
 
-  item.time = transformDate(item.time);
+  item.time = transformDate(item.time as Time);
 
   return item;
 };

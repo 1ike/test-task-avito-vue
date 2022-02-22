@@ -9,6 +9,7 @@ export interface BaseEntityInterface {
   time: Time;
   kids?: IDs;
   deleted?: boolean;
+  dead?: boolean;
 }
 
 export interface StoryInterface extends BaseEntityInterface {
