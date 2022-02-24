@@ -12,19 +12,6 @@ import {
 import config from '@/config';
 
 
-export interface CommentTreeNode {
-  data: CommentInterface;
-  children: CommentTreeNode[];
-  qty: number;
-  level: number;
-}
-
-export interface CommentTreeData {
-  children: CommentTreeNode[];
-  qty: number;
-}
-
-
 const transformDate = (time: Time) => time * 1000;
 
 
@@ -91,34 +78,18 @@ export const getComment = async (id: ID): Promise<CommentInterface> => {
   return comment;
 };
 
-/* const getCommentTree(kids: IDs = [], level = 1): Promise<any> => {
 
-  if (!kids?.length) return of({ children: [], qty: 0 });
+export interface Comments {
+  [id: number]: CommentInterface;
+}
 
-  const getNode = (id: ID) => getComment(id).pipe(
-    switchMap((commentData) => {
-      if (commentData instanceof Error) return of(commentData);
+export const getComments = async (kids: IDs = [], acc: Comments = {}): Promise<Comments> => {
+  await Promise.allSettled(kids.map(async (id) => {
+    const comment = await getComment(id);
+    acc[comment.id] = comment;
+    if (comment.kids?.length) await getComments(comment.kids, acc);
+  }));
 
-      const commentNode$ = getCommentTree(commentData?.kids, level + 1)
-      .pipe(
-        map(({ children, qty }) =>
-        ({ data: commentData, children, qty, level }) as CommentTreeNode),
-      );
-
-      return commentNode$;
-    }),
-  );
-
-  return of(kids).pipe(
-    switchMap((ids) => forkJoin(ids.map((id) => getNode(id)))),
-    map((commentNodesData) => {
-      const commentNodes = commentNodesData
-      .filter((node) => !(node instanceof Error)) as CommentTreeNode[];
-
-      const qty = commentNodes.reduce((acc, node) => acc + node.qty, commentNodes.length);
-
-      return { children: commentNodes, qty };
-    }),
-  );
-} */
+  return acc;
+};
 

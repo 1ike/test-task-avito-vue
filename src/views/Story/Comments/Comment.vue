@@ -18,8 +18,8 @@
     <div v-html="sanitizeHtml(comment.text)"></div>
 
     <Comment
-      v-show="comment.kids && showChildren"
-      v-for="commentId in comment.kids"
+      v-show="ids && (showChildren || !root)"
+      v-for="commentId in ids"
       :key="commentId" :id="commentId"
     />
   </i-card>
@@ -28,57 +28,26 @@
 
 <script setup lang="ts">
 import {
-  ref, onMounted, computed, onUnmounted, toRefs,
+  computed, inject, ref, toRefs,
 } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
 import sanitizeHtml from 'sanitize-html';
-
-import Layout from '@/components/Layout.vue';
-import ButtonRefresh from '@/components/ButtonRefresh.vue';
 import DelimiterVertical from '@/components/DelimiterVertical.vue';
-import FullScreenLoader from '@/components/FullScreenLoader.vue';
-import config from '@/config';
-import { formatDate, polling } from '@/lib';
-import { RequestStatus } from '@/store/types';
+import { formatDate, getLiveCommentIds } from '@/lib';
 import { ID } from '@/types';
+import { Comments } from '@/API';
 
 
 // eslint-disable-next-line no-undef
-const props = defineProps<{ id: ID, root: boolean }>();
+const props = defineProps<{ id: ID, comments: Comments, root?: boolean }>();
 const { id } = toRefs(props);
-
-const store = useStore();
 
 const showChildren = ref(false);
 const toggleChildrenVisibility = () => {
   showChildren.value = !showChildren.value;
 };
 
-const requestStatus = ref(RequestStatus.IDLE);
-const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
+const comments = inject('comments') as Comments;
+const comment = computed(() => comments[id.value]);
 
-const comment = computed(() => store.getters['comments/getComment'](id.value));
-
-
-onMounted(() => {
-  store
-    .dispatch('comments/fetchComment', id.value)
-    .then(() => {
-      requestStatus.value = RequestStatus.SUCCESS;
-    });
-  console.log('comment = ', comment);
-});
-
-onUnmounted(() => {
-  // clearInterval(timer.value);
-});
+const ids = computed(() => getLiveCommentIds(comment.value?.kids, comments));
 </script>
-
-
-<style scoped lang="scss">
-$color: white;
-.-dark .app-comments-header {
-  color: $color;
-}
-</style>

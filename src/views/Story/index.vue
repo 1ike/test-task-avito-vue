@@ -42,19 +42,25 @@
           </template>
         </dl>
       </div>
-      <Comments v-if="story.kids?.length" :commentIds="story.kids" />
+      <Comments
+        v-if="rootCommentIds.length"
+        :comments="state.comments"
+        :rootCommentIds="rootCommentIds"
+        :loading="loading"
+        @refresh="refresh"
+      />
     </template>
 
     <i-loader color="primary" v-if:="loading" class="app-loader"/>
 
     <i-alert color="warning" v-if:="error">
       <template #icon>
-        <i-icon name="ink-warning" />
+        <i-icon name="ink-warning"/>
       </template>
       <span>
         {{ error }}
-        <br />
-        <br />Try to refresh the page.
+        <br/>
+        <br/>Try to refresh the page.
       </span>
     </i-alert>
   </Layout>
@@ -63,7 +69,7 @@
 
 <script setup lang="ts">
 import {
-  ref, onMounted, computed, watchEffect,
+  computed, onMounted, onUnmounted, reactive, ref, watchEffect,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -71,8 +77,9 @@ import sanitizeHtml from 'sanitize-html';
 
 import Layout from '@/components/Layout.vue';
 import ButtonPrimary from '@/components/ButtonPrimary.vue';
-import { formatDate } from '@/lib';
+import { formatDate, getLiveCommentIds, polling } from '@/lib';
 import { RequestStatus } from '@/store/types';
+import { getComments } from '@/API';
 import Comments from './Comments/index.vue';
 
 const route = useRoute();
@@ -81,14 +88,41 @@ const store = useStore();
 
 const error = ref();
 
-const requestStatus = ref(RequestStatus.IDLE);
-const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
+const requestStoryStatus = ref(RequestStatus.IDLE);
 
 const id = Number(route.params.id);
 
 const story = computed(() => store.getters['stories/getStory'](id));
 
 const goHome = () => router.push({ name: 'Home' });
+
+
+const state = reactive({
+  comments: {},
+});
+const rootCommentIds = computed(() => getLiveCommentIds(story.value?.kids, state.comments));
+
+const timer = ref();
+
+const requestCommentsStatus = ref(RequestStatus.IDLE);
+
+const pollingComments = () => polling({
+  timer,
+  successCallback: () => {
+    requestCommentsStatus.value = RequestStatus.REQUEST;
+    return getComments(story.value?.kids)
+      .then((comments) => {
+        state.comments = comments;
+        requestCommentsStatus.value = RequestStatus.SUCCESS;
+      });
+  },
+});
+
+const refresh = () => pollingComments();
+
+
+const loading = computed(() => (requestCommentsStatus.value === RequestStatus.REQUEST)
+  || (requestStoryStatus.value === RequestStatus.REQUEST));
 
 
 watchEffect(() => {
@@ -99,17 +133,24 @@ watchEffect(() => {
 
 onMounted(() => {
   if (!story.value) {
-    requestStatus.value = RequestStatus.REQUEST;
+    requestStoryStatus.value = RequestStatus.REQUEST;
     store
       .dispatch('stories/fetchStory', id)
       .then(() => {
-        requestStatus.value = RequestStatus.SUCCESS;
+        requestStoryStatus.value = RequestStatus.SUCCESS;
+        pollingComments();
       })
       .catch((e) => {
-        requestStatus.value = RequestStatus.FAILURE;
+        requestStoryStatus.value = RequestStatus.FAILURE;
         error.value = e;
       });
+  } else {
+    pollingComments();
   }
+});
+
+onUnmounted(() => {
+  clearInterval(timer.value);
 });
 </script>
 
@@ -131,6 +172,7 @@ dt {
   width: $dtWidth;
   // font-weight: 500;
 }
+
 dd {
   flex: 0 0 auto;
   width: calc(100% - $dtWidth);

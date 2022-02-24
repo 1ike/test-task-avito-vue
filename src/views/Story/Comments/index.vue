@@ -1,73 +1,44 @@
 <template>
-  <section>
+  <section v-if="commentsQty">
     <header class="_display:flex _align-items:center _margin-bottom:2">
       <h2 class="app-comments-header">Comments ({{ commentsQty }})</h2>
       <div>
         <ButtonRefresh
           :disabled="loading"
-          @refresh="refresh"
+          @refresh="$emit('refresh')"
           tooltipText="Refresh comments"
-          tooltipPlacement="left"
           class="_margin-left:2 _margin-top:2"
         />
       </div>
     </header>
-    <Comment v-for="id in commentIds" :key="id" :id="id" root="true"/>
+    <Comment v-for="id in rootCommentIds" :key="id" :id="id" root/>
   </section>
 </template>
 
 
 <script setup lang="ts">
 /* eslint-disable import/first */
-import {
-  ref, onMounted, computed, onUnmounted,
-} from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
+import { computed, provide, toRefs } from 'vue';
 
+import { Comments } from '@/API';
 import ButtonRefresh from '@/components/ButtonRefresh.vue';
-import FullScreenLoader from '@/components/FullScreenLoader.vue';
-import config from '@/config';
-import { polling } from '@/lib';
-import { RequestStatus } from '@/store/types';
 import { ID } from '@/types';
 import Comment from './Comment.vue';
 
 
 // eslint-disable-next-line no-undef
-defineProps<{ commentIds: ID[] }>();
+defineEmits(['refresh']);
 
-const route = useRoute();
-const store = useStore();
+// eslint-disable-next-line no-undef
+const props = defineProps<{ comments: Comments, rootCommentIds: ID[], loading: boolean }>();
+const {
+  comments,
+  rootCommentIds,
+} = toRefs(props);
 
-const timer = ref();
+const commentsQty = computed(() => Object.keys(comments.value).length);
 
-const requestStatus = ref(RequestStatus.IDLE);
-const loading = computed(() => requestStatus.value === RequestStatus.REQUEST);
-
-const commentsQty = computed(() => store.getters['comments/getCommentsQty']);
-
-const pollingStories = () => polling({
-  timer,
-  successCallback: () => {
-    requestStatus.value = RequestStatus.REQUEST;
-    return store
-      .dispatch('stories/fetchNewestStories', 1)
-      .then(() => {
-        requestStatus.value = RequestStatus.SUCCESS;
-      });
-  },
-});
-
-const refresh = () => pollingStories();
-
-// onMounted(() => {
-//   pollingStories();
-// });
-
-onUnmounted(() => {
-  clearInterval(timer.value);
-});
+provide('comments', comments.value);
 </script>
 
 
