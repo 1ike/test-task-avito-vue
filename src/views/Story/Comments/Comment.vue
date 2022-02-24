@@ -38,7 +38,7 @@ import { Comments } from '@/API';
 
 
 // eslint-disable-next-line no-undef
-const props = defineProps<{ id: ID, comments: Comments, root?: boolean }>();
+const props = defineProps<{ id: ID, root?: boolean }>();
 const { id } = toRefs(props);
 
 const showChildren = ref(false);

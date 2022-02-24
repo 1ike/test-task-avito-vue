@@ -33,7 +33,7 @@
           <template v-if="story.url">
             <dt>Link</dt>
             <dd>
-              <a href="{{ story.url }}">{{ story.url }}</a>
+              <a :href="story.url">{{ story.url }}</a>
             </dd>
           </template>
           <template v-if="story.text">
