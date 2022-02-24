@@ -43,7 +43,7 @@
         </dl>
       </div>
       <Comments
-        v-if="rootCommentIds.length"
+        v-if="rootCommentIds?.length"
         :comments="state.comments"
         :rootCommentIds="rootCommentIds"
         :loading="loading"
